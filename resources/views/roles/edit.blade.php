@@ -1,0 +1,24 @@
+@extends('app')
+@section('content')
+@if ($errors->any())
+<div style="color:red">
+    <ul>
+        @foreach ($errors->all() as $er)
+        <div class="alert alert-danger" role="alert">
+           <strong>Alert!</strong> {{ $er }}
+           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        @endforeach
+    </ul>
+</div>
+@endif
+    <form action="{{ route('role.update', $edit->id) }}" method="post">
+        @csrf
+        @method('put')
+        <div class="mb-3">
+            <label for="" class="form-label">Name</label>
+            <input type="text" class="form-control" name="name" value="{{ $edit->name ?? '' }}" required placeholder="Enter your c ategory name">
+        </div>
+        <button type="submit" name="" class="btn btn-primary mt-2">Save Change</button>
+    </form>
+@endsection
