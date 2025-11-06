@@ -1,6 +1,6 @@
 let currentCategory = "all";
+let products = [];
 function filterCategory(category, event) {
-  currentCategory = category;
 
   let buttons = document.querySelectorAll(".category-btn");
   buttons.forEach((btn) => {
@@ -19,9 +19,13 @@ function filterCategory(category, event) {
   renderProducts();
 }
 
-function renderProducts(searchProduct = "") {
+async function renderProducts(searchProduct = "") {
   const productGrid = document.getElementById("productGrid");
   productGrid.innerHTML = "";
+
+
+  const response = await fetch("/order/get-products");
+  products = await response.json();
 
   // filter
   const filtered = products.filter((p) => {
@@ -84,7 +88,7 @@ function renderCart() {
       "cart-item d-flex justify-content-between align-items-center mb-2";
     div.innerHTML = `<div>
                     <strong>${item.product_name}</strong>
-                    <small>${item.product_price}</small> 
+                    <small>${item.product_price}</small>
                     </div>
                     <div class="d-flex align-items-center">
                           <button class="btn btn-outline-secondary me-2" onclick="changeQty(${item.id}, -1)">-</button>
@@ -92,7 +96,7 @@ function renderCart() {
                           <button class="btn btn-outline-secondary ms-3" onclick="changeQty(${item.id}, 1)">+</button>
                           <button class="btn btn-sm btn-danger ms-3" onclick="removeItem(${item.id})">
                             <i class="bi bi-trash"></i>
-                          </button>  
+                          </button>
                     </div>`;
 
     cartContainer.appendChild(div);

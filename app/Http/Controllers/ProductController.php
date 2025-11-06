@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
+use Symfony\Component\HttpKernel\Event\ViewEvent;
 
 class ProductController extends Controller
 {
@@ -14,7 +16,7 @@ class ProductController extends Controller
     public function index()
     {
         $title = "Data Product";
-        $datas = Product::with('category')->orderBy('id', 'desc')->get();
+        $datas = Product::with('category')     ->orderBy('id', 'desc')->get();
         return view('product.index', compact('title', 'datas'));
     }
 
@@ -65,7 +67,10 @@ class ProductController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $title = "Edit Product";
+        $edit = Product::find($id);
+        $categories = Category::get();
+        return view('product.edit', compact('title', 'edit', 'categories'));
     }
 
     /**
@@ -73,7 +78,28 @@ class ProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $product = Product::find($id);
+        $data =
+        [
+            'category_id' => $request->category_id,
+            'product_name' => $request->product_name,
+            'product_price' => $request->product_price,
+            'product_description' => $request->product_description,
+            'is_active' => $request->is_active
+        ];
+
+        if ($request->hasFile('product_photo')) {
+            if ($product->product_photo) {
+                File::delete(public_path('storage/' . $product->product_photo));
+            }
+
+            $path = $request->file('product_photo')->store('products', 'public');
+            $data['product_photo'] =  $path;
+        }
+
+        $product->update($data);
+        alert()->success('Success', 'Update Product Success');
+        return redirect()->to('product');
     }
 
     /**
@@ -81,6 +107,10 @@ class ProductController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $product = Product::find($id);
+        $product->delete();
+        File::delete(public_path('storage/' .$product->product_photo));
+        alert()->success('Success', 'Delete product success');
+        return redirect()->to('product');
     }
 }

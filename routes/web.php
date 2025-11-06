@@ -20,6 +20,12 @@ Route::resource('user', \App\Http\Controllers\UserController::class);
 Route::resource('category', \App\Http\Controllers\CategoriesController::class);
 Route::resource('role', \App\Http\Controllers\RoleController::class);
 Route::resource('product', \App\Http\Controllers\ProductController::class);
+Route::resource('profile', \App\Http\Controllers\ProfileController::class);
+Route::resource('order', \App\Http\Controllers\OrderController::class);
+Route::post('change-password', [\App\Http\Controllers\ProfileController::class, 'changedPassword'])->name('profile.change-password');
+Route::post('change-profile', [\App\Http\Controllers\ProfileController::class, 'changeProfile'])->name('profile.change-profile');
+
+Route::get('order/get-products', [\App\Http\Controllers\Productcontroller::class, 'getProducts'])->name('order.get-products');
 
 
 Route::get('belajar', [\App\Http\Controllers\BelajarController::class, 'index']);
